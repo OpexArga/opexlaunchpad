@@ -1,16 +1,17 @@
+import React from 'react';
+import loginBg from '../assets/loginbg.jpg'; // One level up from pages/
 
-export default function Login() {
+const Login = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-        <form>
-          <input type="email" placeholder="Email" className="input mb-3" />
-          <input type="password" placeholder="Password" className="input mb-3" />
-          <button type="submit" className="btn mb-3">Login</button>
-          
-        </form>
+    <div className='flex h-screen'>
+      <div className='flex-1 bg-emerald-100'></div>
+      <div className='flex flex-col w-96'>
+        <div className='bg-emerald-300 flex justify-center'>Top</div>
+        <div className='bg-emerald-200 flex flex-1 justify-center items-center'>Center</div>
+        <div className='bg-emerald-300 flex justify-center'>Bottom</div>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
