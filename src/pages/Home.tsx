@@ -2,8 +2,35 @@ import logo from '../assets/logo.png';
 import hero from '../assets/hero.jpg';
 import products1 from '../assets/products2.jpg';
 import { NavLink } from 'react-router-dom';
+import { getToken, clearToken } from "../utils/auth";
+import { parseJwt } from "../utils/token";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  useEffect(() => {
+    const token = getToken();
+    console.log("Token:", token);
+
+    if (token) {
+      const payload = parseJwt(token);
+      console.log("Decoded JWT Payload:", payload);
+
+      if (payload && payload.email) {
+        setUserEmail(payload.email);
+      } else {
+        console.log("No email in payload");
+      }
+    } else {
+      console.log("No token found");
+    }
+  }, []);
+
+  const handleLogout = () => {
+    clearToken();               // 1. Hapus token dari localStorage
+    setUserEmail(null);           // 3. Redirect ke homepage
+  };
+
   return (
     <div className="font-sans text-gray-800">
       {/* Navbar */}
@@ -22,12 +49,27 @@ export default function Home() {
           </ul>
         </nav>
         <div className="flex items-center px-4">
-          <NavLink
-            to="/access"
-            className="bg-gray-800 hover:bg-gray-700 text-white py-2 px-5 rounded text-sm font-semibold transition"
-          >
-            Get Started
-          </NavLink>
+          
+          {userEmail == "" || userEmail == null ? (
+            <NavLink
+              to="/access"
+              className="bg-gray-800 hover:bg-gray-700 text-white py-2 px-5 rounded text-sm font-semibold transition"
+            >
+              Get Started
+            </NavLink>
+
+          ) : (
+            <div className="flex">
+              <NavLink
+                to="/dashboard"
+                className="bg-gray-800 hover:bg-gray-700 text-white py-2 px-5 rounded text-sm font-semibold transition"
+              >
+                {userEmail}
+              </NavLink>
+              <button className="ml-4 bg-red-600 hover:bg-red-700 text-white py-2 px-5 rounded text-sm font-semibold transition" onClick={handleLogout}>Logout</button>
+
+            </div>
+          )}
         </div>
       </header>
 
