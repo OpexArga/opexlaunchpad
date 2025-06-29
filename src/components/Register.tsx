@@ -2,6 +2,7 @@
 
 import { mdiEmailOutline, mdiLockOutline, mdiLockCheckOutline  } from '@mdi/js';
 import Icon from '@mdi/react';
+import { NavLink } from 'react-router-dom';
 export default function Register() {
     return (
         <div className="bg-white">
@@ -28,7 +29,7 @@ export default function Register() {
                         <input className="bg-white h-full w-full text-xs px-2 outline-none placeholder-gray-400" placeholder='Re-enter your password' type="password" name="" id="" />
                     </div>
                 </div>
-                <button type='submit' className='bg-teal-500 rounded-sm text-white text-xs font-semibold py-2 w-full'>Register</button>
+                <NavLink to="/" type='submit' className='bg-blue-600 rounded-sm text-center text-white text-xs font-semibold py-2 w-full'>Register</NavLink>
             </form>
         </div>
     )
