@@ -6,8 +6,23 @@ import { getToken, clearToken } from "../utils/auth";
 import { parseJwt } from "../utils/token";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const navigate = useNavigate();
+  
+  const handleTryProduct = async (productId: number) => {
+    try {
+      const response = await api.post(`/products/${productId}/try`);
+      // const accessUrl = response.data.accessUrl;
+      alert(response.data.message + "! Redirecting to dashboard");
+      navigate('/dashboard'); // ⬅️ /saas0001_opexai
+    } catch (err: any) {
+
+      alert((err.response?.data || err.message) + " Redirecting to dashboard");
+      navigate('/dashboard'); // ⬅️ /saas0001_opexai
+    }
+  };
   type ProductDto = {
     id: number;
     name: string;
@@ -139,13 +154,15 @@ export default function Home() {
                     ))}
                   </div>
                   {userEmail == "" || userEmail == null ? (
-                    <button name ="" className="mt-auto bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-medium transition">
+                    <button name ="" className="mt-auto bg-red-600 text-white px-4 py-2 rounded text-sm font-medium transition">
                       Partner Access Required
                     </button>
 
                   ) : (
-                    <button name="" className="mt-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium transition">
-                      Launch {product.name}
+                    <button
+                    onClick={() => handleTryProduct(product.id)} name="" 
+                    className="mt-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium transition">
+                      Try {product.name}
                     </button>
                   )}
                 </div>

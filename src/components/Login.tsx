@@ -14,14 +14,14 @@ export default function Login() {
     const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await api.post("/auth/login", { email, password });
-      saveToken(res.data.token);
-      alert("Login successful. Welcome!");
-      navigate("/");
-    } catch (err: any) {
-      alert("Login failed: " + err.response?.data);
-    }
-  };
+        const res = await api.post("/auth/login", { email, password });
+        saveToken(res.data.token);
+        alert("Login successful. Welcome!");
+        navigate("/");
+        } catch (err: any) {
+            alert("Login failed: " + err.response?.data);
+        }
+    };
     return (
         <div className="bg-white">
             <form onSubmit={handleLogin}>
