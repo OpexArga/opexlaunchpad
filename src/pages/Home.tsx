@@ -5,9 +5,20 @@ import { NavLink } from 'react-router-dom';
 import { getToken, clearToken } from "../utils/auth";
 import { parseJwt } from "../utils/token";
 import { useEffect, useState } from "react";
+import api from "../api/axios";
 
 export default function Home() {
+  type ProductDto = {
+    id: number;
+    name: string;
+    description: string;
+    imageUrl: string;
+    tags: string[];
+  };
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [products, setProducts] = useState<ProductDto[]>([]);
+
+
   useEffect(() => {
     const token = getToken();
     console.log("Token:", token);
@@ -31,6 +42,19 @@ export default function Home() {
     setUserEmail(null);           // 3. Redirect ke homepage
   };
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get("/products"); // ✅ pakai axios
+        setProducts(response.data);
+        console.log(response.data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+
+    fetchProducts();
+  }, []);
   return (
     <div className="font-sans text-gray-800">
       {/* Navbar */}
@@ -95,36 +119,42 @@ export default function Home() {
 
       {/* Product Highlight */}
       <section className="flex justify-center mt-24">
-        <div className="w-10/12 flex flex-col md:flex-row md:h-96 gap-8">
-          <div className="md:w-2/5 flex justify-center">
-            <img src={products1} alt="Product Visual" className="h-full object-cover rounded-lg" />
-          </div>
-          <div className="md:w-3/5 flex flex-col justify-center">
-            <h2 className="text-3xl font-bold mb-4">Meet Opex AI</h2>
-            <p className="text-lg text-gray-700">
-              Unlock AI-powered efficiency by connecting your ERP and enterprise systems seamlessly. Automate complex workflows, simplify data handling, and gain real-time insights — all in one intelligent platform.
-            </p>
+        <div className="w-10/12">
+          <h2 className="text-3xl font-bold text-center mb-12">Explore Our Products</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {products.map((product) => (
+              <div key={product.id} className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden">
+                <div className="h-48">
+                  <img src={products1} alt={product.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="p-6 flex flex-col justify-between flex-1">
+                  <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+                  <p className="text-gray-700 text-sm mb-4">{product.description}</p>
 
-            <div className="flex flex-wrap mt-6 gap-2">
-              <div className="bg-blue-100 text-blue-900 px-4 py-2 rounded-xl text-sm font-medium">
-                Scalable Cloud Infrastructure
-              </div>
-              <div className="bg-green-100 text-green-900 px-4 py-2 rounded-xl text-sm font-medium">
-                Always-On Expert Support
-              </div>
-              <div className="bg-yellow-100 text-yellow-900 px-4 py-2 rounded-xl text-sm font-medium">
-                Tailored to Your Workflow
-              </div>
-            </div>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {product.tags.map((tag, idx) => (
+                      <div key={idx} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-medium">
+                        {tag}
+                      </div>
+                    ))}
+                  </div>
+                  {userEmail == "" || userEmail == null ? (
+                    <button name ="" className="mt-auto bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-medium transition">
+                      Partner Access Required
+                    </button>
 
-            <div className="mt-6">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded text-sm font-medium transition">
-                Try Opex AI
-              </button>
-            </div>
+                  ) : (
+                    <button name="" className="mt-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium transition">
+                      Launch {product.name}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
+
       <section>
         {/* Footer */}
         <footer className="bg-gray-900 text-white mt-24">
